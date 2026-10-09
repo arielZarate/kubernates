@@ -94,12 +94,18 @@ El **Control Plane** es el "cerebro" de Kubernetes: decide y administra el clust
 | `etcd` | Base de datos. Guarda el estado del cluster. | 🗄️ Base de datos/estado |
 | `kube-scheduler` | Decide en qué Node colocar cada Pod. | 📍 Decide dónde colocar Pods |
 | `kube-controller-manager` | Mantiene el estado deseado (por ej. "quiero 3 Pods"). | 🔄 Busca cumplir el estado deseado |
-| `coredns` | DNS interno del cluster. | 📖 DNS interno |
-| `kube-proxy` | Reglas de red para que los Services lleguen a los Pods. | 🌐 Red/Service → Pods |
-| `kindnet` | Componente de red/CNI para la conectividad de los Pods. | 🌐 Red de Pods |
-| `storage-provisioner` | Provisión de almacenamiento/volúmenes. | 💾 Provisionamiento de almacenamiento |
 
-Cuando ejecutás `kubectl get pods -A`, los componentes del Control Plane aparecen en el namespace **`kube-system`**, que está reservado para el sistema de Kubernetes.
+Además del Control Plane, en el cluster corren **componentes de nodo y add-ons** (también visibles en `kube-system`, pero **no forman parte del Control Plane**):
+
+| Componente | Función | Dónde corre |
+| --- | --- | --- |
+| `kubelet` | Agente que ejecuta y vigila los contenedores asignados a su Node. | En cada Node (Worker) |
+| `kube-proxy` | Reglas de red para que los Services lleguen a los Pods. | En cada Node (DaemonSet) |
+| `kindnet` | Componente de red/CNI para la conectividad de los Pods. | En cada Node (DaemonSet) |
+| `coredns` | DNS interno del cluster. | Deployment en `kube-system` |
+| `storage-provisioner` | Provisión de almacenamiento/volúmenes. | Add-on de Minikube |
+
+Cuando ejecutás `kubectl get pods -A`, tanto los componentes del Control Plane como estos add-ons aparecen en el namespace **`kube-system`**, que está reservado para el sistema de Kubernetes.
 
 ### El ciclo de vida de una orden
 
