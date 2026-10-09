@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+
+        # aca los recursos dentro del container
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+
+            # Comprobación de salud
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10  
+          
+          # Comprueba si el contenedor está listo para recibir tráfico
+          readinessProbe:
+            httpGet:
+              path: /   #no-existe
+              port: 80  #81
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          
+          
+          startupProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 5
+            failureThreshold: 12                          
+
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+          env: 
+           - name: USERNAME
+             valueFrom: 
+              secretKeyRef: 
+                name: nginx-secret
+                key: username
+
+
+           - name: PASSWORD
+             valueFrom:
+              secretKeyRef:
+                name: nginx-secret
+                key: password
+
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+     
+
+  
+
+
+
+
+
+
+
+
+

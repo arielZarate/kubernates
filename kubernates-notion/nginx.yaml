@@ -1,0 +1,14 @@
+apiVersion: v1     # Que version de API 
+kind: Pod   # Que recurso 
+
+metadata: 
+  name: nginx #recurso 
+
+
+spec: 
+ containers: 
+  - name: nginx
+    image: nginx
+    
+
+
